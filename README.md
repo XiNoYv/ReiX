@@ -20,6 +20,7 @@ ReiX_cli [options] <file> [start:end | pos]
 - `-n`: Don't display line numbers.
 - `-c`: Don't display ASCII characters.
 - `-i`: Display hex bytes in one line (will set -n and -c to true).
+- `-v`: Show version information.
 
 ### Arguments
 
