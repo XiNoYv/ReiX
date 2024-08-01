@@ -21,12 +21,17 @@ fn main() {
     let mut file_path: String = String::new();
     let mut range_str: String = String::new();
 
-    let (display_help, display_line_numbers, display_ascii, display_inline) =
+    let (display_help, display_line_numbers, display_ascii, display_inline, display_version) =
         parse_args(std::env::args(), &mut file_path, &mut range_str);
 
     let (start, end) = parse_range(&range_str);
     if display_help || file_path.is_empty() {
         help();
+        return;
+    }
+
+    if display_version {
+        println!("ReiX 0.1.0 by XiNoYv");
         return;
     }
 
@@ -38,12 +43,13 @@ fn parse_args(
     env_args: std::env::Args,
     file_path: &mut String,
     range: &mut String,
-) -> (bool, bool, bool, bool) {
+) -> (bool, bool, bool, bool, bool) {
     let mut display_help = false;
     let mut display_line_numbers = true;
     let mut display_ascii = true;
     let mut display_inline = false;
     let mut options_flag = true;
+    let mut version_flag = false;
     let mut arg_iter = env_args.skip(1);
     while let Some(argument) = arg_iter.next() {
         if options_flag && argument.starts_with('-') {
@@ -60,6 +66,9 @@ fn parse_args(
             if options.contains(&'i') {
                 display_inline = true;
             }
+            if options.contains(&'v') {
+                version_flag = true;
+            }
             continue;
         }
         if file_path.is_empty() {
@@ -74,6 +83,7 @@ fn parse_args(
         display_line_numbers,
         display_ascii,
         display_inline,
+        version_flag,
     )
 }
 
@@ -90,6 +100,7 @@ fn help() {
     println!("  -n  Don't display line numbers");
     println!("  -c  Don't display ASCII characters");
     println!("  -i  Display hex bytes in one line (will set -n and -c to true)");
+    println!("  -v  Show version information");
     println!();
     println!("Arguments:");
     println!("  <file>  The path to the file to be viewed.");
@@ -97,7 +108,9 @@ fn help() {
     println!("    > Both `start` and `end` can be empty or negative.");
     println!("      > - If `start` is empty, it will be set to 0.");
     println!("      > - If `end` is empty, it will be set to the end of the file.");
-    println!("      > - If `start` or `end` is negative, it will be counted from the end of the file.");
+    println!(
+        "      > - If `start` or `end` is negative, it will be counted from the end of the file."
+    );
     println!("  [pos]  The position of the byte to be displayed.");
 }
 
